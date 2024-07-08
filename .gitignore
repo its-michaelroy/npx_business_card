@@ -1,0 +1,5 @@
+# Exclude the following:
+
+/node_modules/
+/.idea/
+.idea/
