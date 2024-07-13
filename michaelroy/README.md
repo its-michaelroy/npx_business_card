@@ -11,7 +11,7 @@ npx michaelroy
 
 You should see the following terminal output:
 
-![Expected Output](images/terminal-output.jpg)
+![Expected Output](https://github.com/its-michaelroy/npx_business_card/blob/main/images/terminal-output.png?raw=true)
 
 It will ask you to download and install additional packages as shown above.
 
