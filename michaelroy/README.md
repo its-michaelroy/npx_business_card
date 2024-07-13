@@ -11,7 +11,7 @@ npx michaelroy
 
 You should see the following terminal output:
 
-![Expected Output](images/terminal-output.png)
+![Expected Output](images/terminal-output.jpg)
 
 It will ask you to download and install additional packages as shown above.
 
