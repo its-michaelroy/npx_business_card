@@ -6,14 +6,14 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "michaelroy": "./cli.mjs"
+    "michaelroy": "cli.mjs"
   },
   "description": "Simple CLI creation",
   "author": "Michael Roy <michael.roy@mrcodewizard.com>",
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/its-michaelroy/npx_business_card.git"
+    "url": "git+https://github.com/its-michaelroy/npx_business_card.git"
   },
   "bugs": {
     "url": "https://github.com/its-michaelroy/npx_business_card/issues"
