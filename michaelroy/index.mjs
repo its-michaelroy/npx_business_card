@@ -1,13 +1,15 @@
 // ./index.mjs
 
+import { select } from "@inquirer/prompts";
+import axios from "axios";
 import boxen from "boxen";
 import chalk from "chalk";
-import ora from "ora";
 import cliSpinners from "cli-spinners";
-import open from "open";
 import fs from "fs";
+import open from "open";
+import ora from "ora";
+import os from "os";
 import path from "path";
-import { File } from "megajs";
 import data from "./lib/data.js";
 
 const renderOpts = {
@@ -68,75 +70,70 @@ const renderJson = () => {
 };
 
 const handleAction = async () => {
-  const inquirer = await import("inquirer");
+  const action = await select({
+    message: "What would you like to do?",
+    choices: [
+      {
+        name: `Send me an ${chalk.green.bold("email")}?`,
+        value: "email",
+      },
+      {
+        name: `Download my ${chalk.magentaBright.bold("Resume")}?`,
+        value: "resume",
+      },
+      {
+        name: `Schedule a ${chalk.redBright.bold("Meeting")}?`,
+        value: "meeting",
+      },
+      {
+        name: "Just quit and exit.",
+        value: "quit",
+      },
+    ],
+  });
 
-  const prompt = inquirer.createPromptModule();
+  if (action === "email") {
+    open(`mailto:${data.email}`);
+    console.log(
+      "\nDone, see you soon in the virtual world of inboxes!\n",
+    );
+  } else if (action === "resume") {
+    const loader = ora({
+      text: "Downloading Resume",
+      spinner: cliSpinners.material,
+    }).start();
+    try {
+      const downloadsDir = path.join(os.homedir(), "Downloads");
+      const filePath = path.join(downloadsDir, "Michael_Roy_Resume.pdf");
+      const response = await axios({
+        url: data.resumeUrl,
+        method: "GET",
+        responseType: "stream",
+      });
 
-  const questions = [
-    {
-      type: "list",
-      name: "action",
-      message: "What would you like to do?",
-      choices: [
-        {
-          name: `Send me an ${chalk.green.bold("email")}?`,
-          value: () => {
-            open(`mailto:${data.email}`);
-            console.log(
-              "\nDone, see you soon in the virtual world of inboxes!\n",
-            );
-          },
-        },
-        {
-          name: `Download my ${chalk.magentaBright.bold("Resume")}?`,
-          value: async () => {
-            const loader = ora({
-              text: "Downloading Resume",
-              spinner: cliSpinners.material,
-            }).start();
-            try {
-              const file = File.fromURL(data.resumeUrl);
-              const stream = file.download();
-              const filePath = path.join(
-                process.cwd(),
-                "michael-roy-resume.pdf",
-              );
-              const writer = fs.createWriteStream(filePath);
-              stream.pipe(writer);
-              writer.on("finish", () => {
-                console.log(`\nResume Downloaded at ${filePath} \n`);
-                open(filePath);
-                loader.stop();
-              });
-              writer.on("error", (err) => {
-                console.error("Error downloading the resume:", err);
-                loader.stop();
-              });
-            } catch (error) {
-              console.error("Error downloading the resume:", error);
-              loader.stop();
-            }
-          },
-        },
-        {
-          name: `Schedule a ${chalk.redBright.bold("Meeting")}?`,
-          value: () => {
-            open(data.calendly);
-            console.log("\n See you at the meeting! \n");
-          },
-        },
-        {
-          name: "Just quit and exit.",
-          value: () => {
-            console.log("Até logo e não se esqueça de trazer café! ☕😁\n");
-          },
-        },
-      ],
-    },
-  ];
+      const writer = fs.createWriteStream(filePath);
+      response.data.pipe(writer);
 
-  const answer = await prompt(questions);
-  answer.action();
+      writer.on("finish", () => {
+        console.log(`\nResume Downloaded at ${filePath} \n`);
+        open(filePath);
+        loader.stop();
+      });
+
+      writer.on("error", (err) => {
+        console.error("Error downloading the resume:", err);
+        loader.stop();
+      });
+    } catch (error) {
+      console.error("Error downloading the resume:", error);
+      loader.stop();
+    }
+  } else if (action === "meeting") {
+    open(data.calendly);
+    console.log("\n See you at the meeting! \n");
+  } else if (action === "quit") {
+    console.log("Até logo e não se esqueça de trazer café! ☕😁\n");
+  }
 };
 
-export { renderCard, renderJson, handleAction };
+export { handleAction, renderCard, renderJson };

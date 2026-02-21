@@ -8,7 +8,7 @@ module.exports = {
   urls: [
     'https://mrcodewizard.com'
   ],
-  resumeUrl: 'https://mega.nz/file/4rkimQaB#iytp5Pra7Yh_RL0OI5fJdaz_dqhTrXj5bU31AyA925E',
+  resumeUrl: 'https://digitalcraftsman.org/media/Michael_Roy_Resume.pdf',
   calendly: 'https://calendly.com/michael-a-roy1',
   email: 'michael.roy@mrcodewizard.com'
 };
